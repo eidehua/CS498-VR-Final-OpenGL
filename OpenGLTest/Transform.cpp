@@ -1,24 +1,27 @@
 #include "Transfrom.h"
 
+using Eigen::Vector3f;
+using Eigen::Vector4f;
+
 /**
 * Standard Constructor, 0.0'd attributes
 **/
 Transform::Transform()
 : GameComponent(GameComponent::TRANSFORM, false)
 {
-	this->scale = Vector4(1, 1, 1, 1);
+	this->scale = Vector4f(1, 1, 1, 1);
 }
 
 /**
 * Constructor set by floats
 * @param float x9 (order goes postion, rotation, scale, and x, y ,z, w).
 **/
-Transform(float p_x, float p_y, float p_z, float p_w, float r_x, float r_y, float r_z, float r_w, float s_x, float s_y, float s_z, float s_w);
+Transform::Transform(float p_x, float p_y, float p_z, float p_w, float r_x, float r_y, float r_z, float r_w, float s_x, float s_y, float s_z, float s_w)
 : GameComponent(GameComponent::TRANSFORM, false)
 {
-	this->position = Vector4(p_x, p_y, p_z, p_w);
-	this->rotation = Vector4(r_x, r_y, r_z, r_w);
-	this->scale = Vector4(s_x, s_y, s_z, s_w);
+	this->position = Vector4f(p_x, p_y, p_z, p_w);
+	this->rotation = Vector4f(r_x, r_y, r_z, r_w);
+	this->scale = Vector4f(s_x, s_y, s_z, s_w);
 }
 
 /**
@@ -27,7 +30,7 @@ Transform(float p_x, float p_y, float p_z, float p_w, float r_x, float r_y, floa
 * @param Vector4 (rotation)
 * @param Vector4 (scale)
 **/
-Transform::Transform(Vector4 pos, Vector4 rot, Vector4 scale)
+Transform::Transform(Vector4f pos, Vector4f rot, Vector4f scale)
 : GameComponent(GameComponent::TRANSFORM, false)
 {
 	this->position = pos;

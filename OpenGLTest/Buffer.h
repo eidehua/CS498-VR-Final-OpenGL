@@ -3,7 +3,7 @@
 #include <vector>
 #include <string>
 
-#include <gl/freeglut.h>
+#include <GL/glew.h>
 
 class Buffer
 {

@@ -1,11 +1,11 @@
 #pragma once
 
-#include <cml>
+#include <Eigen/Dense>
 
 #include "GameComponent.h"
 
-typedef cml::vector3f Vector3;
-typedef cml::vector4f Vector4;
+using Eigen::Vector3f;
+using Eigen::Vector4f;
 
 class Transform : GameComponent
 {
@@ -13,7 +13,7 @@ class Transform : GameComponent
 		//Constructors
 		Transform();
 		Transform(float p_x, float p_y, float p_z, float p_w, float r_x, float r_y, float r_z, float r_w, float s_x, float s_y, float s_z, float s_w);
-		Transform(Vector4 pos, Vector4 rot, Vector4 scale);
+		Transform(Vector4f pos, Vector4f rot, Vector4f scale);
 
 		//Helper Functions
 		void copy(Transform transform);
@@ -23,7 +23,7 @@ class Transform : GameComponent
 
 		//Transform attributes
 		//No need to be private because it doesn't need getters and setters yet?
-		Vector4 position;
-		Vector4 rotation;
-		Vector4 scale;
+		Vector4f position;
+		Vector4f rotation;
+		Vector4f scale;
 };

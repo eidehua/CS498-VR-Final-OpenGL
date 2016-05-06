@@ -1,7 +1,6 @@
 #include "Camera.h"
 
-typedef cml::vector3f Vector3;
-typedef cml::vector4f Vector4;
+using Eigen::Vector3f;
 
 /**
 * Standard Constructor, 0.0'd attributes
@@ -16,7 +15,7 @@ Camera::Camera(){
 * @param Vector3 (look_at)
 * @param Vector3 (up)
 **/
-Camera::Camera(Vector3 pos, Vector3 look_at, Vector3 up){
+Camera::Camera(Vector3f pos, Vector3f look_at, Vector3f up){
 	this->position = pos;
 	this->look_at = look_at;
 	this->up = up;

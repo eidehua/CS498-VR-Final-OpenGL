@@ -8,8 +8,6 @@
 #include <vector>
 
 #include "Model.h"
-#include "SimpleMath.h"
-
-using namespace DirectX::SimpleMath;
+#include <Eigen/Dense>
 
 bool init_model_from_obj(const wchar_t *filename, Model *model);

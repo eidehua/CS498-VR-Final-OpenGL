@@ -1,19 +1,20 @@
 #pragma once
 #include <vector>
 #include <string>
-#include <cml>
+#include <Eigen/Dense>
 
 #include "GameComponent.h"
 #include "Transfrom.h"
 
-using namespace cml;
+using Eigen::Vector3f;
+using Eigen::Vector4f;
 
 class GameObject
 {
 public:
 	//Constructors
 	GameObject();
-	GameObject(Vector3f pos, Vector3f rot, Vector3f scale);
+	GameObject(Vector4f pos, Vector4f rot, Vector4f scale);
 	GameObject(Transform transform);
 
 	//Get and Setters

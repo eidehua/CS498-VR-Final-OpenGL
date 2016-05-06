@@ -1,19 +1,18 @@
 #pragma once
 
-#include <cml>
+#include <Eigen/Dense>
 
-typedef cml::vector3f Vector3;
-typedef cml::vector4f Vector4;
+using Eigen::Vector3f;
 
 class Camera
 {
 public:
 	//Constructors
 	Camera();
-	Camera(Vector3 pos, Vector3 look_at, Vector3 up);
+	Camera(Vector3f pos, Vector3f look_at, Vector3f up);
 	
 	//Attributes
-	Vector3 position;
-	Vector3 look_at;
-	Vector3 up;
+	Vector3f position;
+	Vector3f look_at;
+	Vector3f up;
 };

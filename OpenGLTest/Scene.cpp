@@ -1,7 +1,7 @@
 #include "Scene.h"
 
-typedef cml::vector3f Vector3;
-typedef cml::vector4f Vector4;
+using Eigen::Vector3f;
+using Eigen::Vector4f;
 
 /**
 * Default constructor
@@ -13,14 +13,8 @@ Scene::Scene()
 	this->bgcolor[1] = 0.0;
 	this->bgcolor[2] = 1.0;
 	this->bgcolor[3] = 1.0;
-	this->camera.position = Vector4(20.0, 20.0, 20.0);
-	this->camera.up = Vector3(0.0, 0.0, 1.0);
-	this->light.pos = Vector3(14.0f, 10.0f, 14.0f);
-	this->light.dir = Vector3(0.0f, -1.0f, 0.0f);
-	this->light.range = 50.0f;
-	this->light.att = Vector3(0.0f, 0.2f, 0.0f);
-	this->light.ambient = Vector4(0.2f, 0.2f, 0.2f, 1.0f);
-	this->light.diffuse = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+	this->camera.position = Vector3f(20.0, 20.0, 20.0);
+	this->camera.up = Vector3f(0.0, 0.0, 1.0);
 }
 
 /**
@@ -52,23 +46,21 @@ void Scene::update_scene()
 * - Goes through each game object and renders the model if it exists
 * @param DX11 (Directx object)
 **/
-void Scene::render_scene(DX11 *directx)
+void Scene::render_scene(OpenGL *opengl)
 {
-	directx->set_background(Scene::bgcolor);
-	directx->clear_depth();
-
-	directx->update_light(this->light);
+	opengl->set_background(Scene::bgcolor);
+	opengl->clear_depth();
 
 	for (std::vector<GameObject *>::iterator it = this->game_objects.begin(); it != this->game_objects.end(); ++it)
 	{
 		Model *game_model = (Model *) (*it)->get_game_component(GameComponent::MODEL);
 		if ((*it)->get_game_component(GameComponent::MODEL) != NULL){
-			directx->update_resources((Transform *) (*it)->get_game_component(GameComponent::TRANSFORM), this->camera);
-			directx->render_model(game_model);
+			opengl->update_resources((Transform *) (*it)->get_game_component(GameComponent::TRANSFORM), this->camera);
+			opengl->render_model(game_model);
 		}
 	}
 
-	directx->update_swapchain();
+	opengl->update_swapchain();
 }
 
 /**

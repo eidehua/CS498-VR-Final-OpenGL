@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "GameComponent.h"
 
 /**
@@ -35,6 +34,7 @@ wchar_t * GameComponent::get_type_name()
 		return L"MODEL";
 		break;
 	}
+	return nullptr;
 }
 
 /**

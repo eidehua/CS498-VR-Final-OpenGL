@@ -1,8 +1,11 @@
 #pragma once
 
-#include <cml>
+#include <Eigen/Dense>
 
+#include "OpenGL.h"
 #include "GameObject.h"
+#include "Camera.h"
+#include "Model.h"
 
 class Scene{
 public:
@@ -12,7 +15,7 @@ public:
 
 	//Update and Render
 	void update_scene();
-	void render_scene(DX11 *directx);
+	void render_scene(OpenGL *opengl);
 
 	//Add/Delete GameObjects from Scene
 	int add_game_object(GameObject *game_object);
@@ -21,9 +24,8 @@ public:
 
 private:
 	Camera camera;
-	Light light;
 
-	FLOAT bgcolor[4];
+	float bgcolor[4];
 
 	std::vector<GameObject *> game_objects;
 };
