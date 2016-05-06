@@ -5,9 +5,9 @@ VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OpenGLTest", "OpenGLTest\OpenGLTest.vcxproj", "{55211B3F-75DE-4C45-B8CE-4403222E437B}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LibOVR", "U:\CS498SL Virtual Reality\OculusSDK\LibOVR\Projects\Windows\VS2015\LibOVR.vcxproj", "{EA50E705-5113-49E5-B105-2512EDC8DDC6}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LibOVR", "LibOVR\Projects\Windows\VS2015\LibOVR.vcxproj", "{EA50E705-5113-49E5-B105-2512EDC8DDC6}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LibOVRKernel", "U:\CS498SL Virtual Reality\OculusSDK\LibOVRKernel\Projects\Windows\VS2015\LibOVRKernel.vcxproj", "{29FA0962-DDC6-4F72-9D12-E150DF29E279}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LibOVRKernel", "LibOVRKernel\Projects\Windows\VS2015\LibOVRKernel.vcxproj", "{29FA0962-DDC6-4F72-9D12-E150DF29E279}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
