@@ -89,8 +89,7 @@ void draw() {
 
 	ovrTrackingState hmdState = ovr_GetTrackingState(HMD, ftiming, ovrTrue);
 
-
-	glClearColor(1.0, 1.0, 0.0, 0.0);
+	//glClearColor(1.0, 1.0, 0.0, 0.0);
 	scene.render_scene(&opengl);
 }
 
@@ -110,6 +109,7 @@ void mainLoop() {
 		glViewport(0, 0, width, height);
 
 		draw();
+
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
@@ -135,18 +135,22 @@ int main(int argc, char* argv[]){
 
 	debug.init(debug.VERBOSE);
 
+	setupVR();
+
 	if (!glfwInit()) {
 		exit(EXIT_FAILURE);
 	}
 
 	//Now setup glfw stuff
-	window = glfwCreateWindow(1000, 1000, "4D VR", NULL, NULL); //glfwGetPrimaryMonitor() for first NULL for full screen
+	window = glfwCreateWindow(1600, 700, "4D VR", NULL, NULL); //glfwGetPrimaryMonitor() for first NULL for full screen
 	if (!window) {
 		glfwTerminate();
 		exit(EXIT_FAILURE);
 	}
 	glfwMakeContextCurrent(window);
 	glfwSetKeyCallback(window, key_callback);
+	
+	
 
 	Player1 = new CXBOXController(1); //setup player controller
 	opengl.init(1600, 700); //sets up openGL
