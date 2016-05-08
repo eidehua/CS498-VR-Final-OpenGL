@@ -60,7 +60,7 @@ void Scene::render_scene(OpenGL *opengl)
 		}
 	}
 
-	opengl->update_swapchain();
+	//opengl->update_swapchain();
 }
 
 /**

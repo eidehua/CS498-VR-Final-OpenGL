@@ -1,6 +1,8 @@
 #include "OpenGL.h"
-
+#include <GLFW/glfw3.h>
+#include <GLFW/glfw3native.h>
 using Eigen::Matrix4d;
+ 
 
 /**
 * Standard Constructor
@@ -16,15 +18,16 @@ OpenGL::~OpenGL(){
 	//this->release(0);
 }
 
+
 /**
 * Initialized everything related to DirectX (shaders, render texture, depth)
 * @param bool (true if it succeeded)
 **/
 bool OpenGL::init(int window_width, int window_height){
-
+/*
 	if (!init_viewport(window_width, window_height))
 		debug.write("DirectX11:init:Failed to init viewport");
-
+*/
 	GLenum err = glewInit();
 	if (err != GLEW_OK)
 	{
@@ -33,6 +36,8 @@ bool OpenGL::init(int window_width, int window_height){
 		debug.write(err);
 		exit(1);
 	}
+
+	set_settings();
 
 	if (!init_shaders())
 		debug.write("DirectX11:init:Failed to init shaders");
@@ -45,13 +50,15 @@ bool OpenGL::init(int window_width, int window_height){
 * @param bool (true if it succeeded)
 **/
 bool OpenGL::init_viewport(int window_width, int window_height){
-	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH | GLUT_STENCIL);
+	/*glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH | GLUT_STENCIL);
 	//We want to make a GL 3.3 context
 	glutInitContextVersion(3, 3);
 	glutInitContextFlags(GLUT_CORE_PROFILE);
 	glutInitWindowPosition(100, 50);
 	glutInitWindowSize(600, 600);
-	__glutCreateWindowWithExit("GL 3.3 Test", NULL);
+	__glutCreateWindowWithExit("GL 3.3 Test", NULL);*/
+
+
 	return true;
 }
 
@@ -88,13 +95,13 @@ void OpenGL::set_settings(){
 	glFrontFace(GL_CCW);
 	glCullFace(GL_BACK);
 	glEnable(GL_CULL_FACE);
-	glClearColor(1.0, 0.0, 0.0, 0.0);
+	glClearColor(1.0, 1.0, 0.0, 0.0);
 	glClearDepth(1.0);
 	glClearStencil(0);
 	glDisable(GL_BLEND);
 	glDisable(GL_ALPHA_TEST);
 	glDisable(GL_DITHER);
-	glActiveTexture(GL_TEXTURE0);
+	//glActiveTexture(GL_TEXTURE0);
 }
 
 /**

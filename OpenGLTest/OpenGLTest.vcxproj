@@ -103,7 +103,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>U:\CS498SL Virtual Reality\GitHubVisualStudio\CS498-VR-Final-OpenGL\LibOVR\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -181,11 +181,21 @@
   <ItemGroup>
     <Text Include="debug.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\LibOVRKernel\Projects\Windows\VS2015\LibOVRKernel.vcxproj">
+      <Project>{29fa0962-ddc6-4f72-9d12-e150df29e279}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\LibOVR\Projects\Windows\VS2015\LibOVR.vcxproj">
+      <Project>{ea50e705-5113-49e5-b105-2512edc8ddc6}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
     <Import Project="..\packages\nupengl.core.redist.0.1.0.1\build\native\nupengl.core.redist.targets" Condition="Exists('..\packages\nupengl.core.redist.0.1.0.1\build\native\nupengl.core.redist.targets')" />
     <Import Project="..\packages\nupengl.core.0.1.0.1\build\native\nupengl.core.targets" Condition="Exists('..\packages\nupengl.core.0.1.0.1\build\native\nupengl.core.targets')" />
     <Import Project="..\packages\Eigen.3.2.8\build\native\Eigen.targets" Condition="Exists('..\packages\Eigen.3.2.8\build\native\Eigen.targets')" />
+    <Import Project="..\packages\glfw.redist.3.1.2\build\native\glfw.redist.targets" Condition="Exists('..\packages\glfw.redist.3.1.2\build\native\glfw.redist.targets')" />
+    <Import Project="..\packages\glfw.3.1.2\build\native\glfw.targets" Condition="Exists('..\packages\glfw.3.1.2\build\native\glfw.targets')" />
   </ImportGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
@@ -194,5 +204,7 @@
     <Error Condition="!Exists('..\packages\nupengl.core.redist.0.1.0.1\build\native\nupengl.core.redist.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\nupengl.core.redist.0.1.0.1\build\native\nupengl.core.redist.targets'))" />
     <Error Condition="!Exists('..\packages\nupengl.core.0.1.0.1\build\native\nupengl.core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\nupengl.core.0.1.0.1\build\native\nupengl.core.targets'))" />
     <Error Condition="!Exists('..\packages\Eigen.3.2.8\build\native\Eigen.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Eigen.3.2.8\build\native\Eigen.targets'))" />
+    <Error Condition="!Exists('..\packages\glfw.redist.3.1.2\build\native\glfw.redist.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\glfw.redist.3.1.2\build\native\glfw.redist.targets'))" />
+    <Error Condition="!Exists('..\packages\glfw.3.1.2\build\native\glfw.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\glfw.3.1.2\build\native\glfw.targets'))" />
   </Target>
 </Project>
