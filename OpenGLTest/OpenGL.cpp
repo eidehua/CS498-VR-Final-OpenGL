@@ -23,8 +23,9 @@ OpenGL::~OpenGL(){
 bool OpenGL::init(int window_width, int window_height){
 
 	if (!init_viewport(window_width, window_height))
-		debug.write("DirectX11:init:Failed to init viewport");
+		debug.write("OpenGL:init:Failed to init viewport");
 
+	glewExperimental = GL_TRUE;
 	GLenum err = glewInit();
 	if (err != GLEW_OK)
 	{
@@ -33,6 +34,8 @@ bool OpenGL::init(int window_width, int window_height){
 		debug.write(err);
 		exit(1);
 	}
+
+	set_settings();
 
 	if (!init_shaders())
 		debug.write("DirectX11:init:Failed to init shaders");
@@ -49,9 +52,17 @@ bool OpenGL::init_viewport(int window_width, int window_height){
 	//We want to make a GL 3.3 context
 	glutInitContextVersion(3, 3);
 	glutInitContextFlags(GLUT_CORE_PROFILE);
-	glutInitWindowPosition(100, 50);
-	glutInitWindowSize(600, 600);
-	__glutCreateWindowWithExit("GL 3.3 Test", NULL);
+	glutInitWindowPosition(50, 50);
+	glutInitWindowSize(window_width, window_height);
+	__glutCreateWindowWithExit("4D VR DEMO", NULL);
+
+	GLenum error = glGetError();
+
+	if (error != 0) {
+		debug.write("Failed to init view port");
+		debug.write(error);
+	}
+
 	return true;
 }
 
@@ -64,7 +75,8 @@ bool OpenGL::init_shaders()
 	}
 	else
 	{
-		//ProjectionModelviewMatrix_Loc = glGetUniformLocation(ShaderProgram, "ProjectionModelviewMatrix");
+		GLenum error = glGetError();
+		ProjectionModelviewMatrix_Loc = glGetUniformLocation(ShaderProgram, "ProjectionModelviewMatrix");
 	}
 
 	return true;
@@ -74,27 +86,37 @@ bool OpenGL::init_shaders()
 * Settings for global rendering options
 **/
 void OpenGL::set_settings(){
+	GLenum error = glGetError();
+
 	glShadeModel(GL_SMOOTH);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glReadBuffer(GL_BACK);
 	glDrawBuffer(GL_BACK);
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
-	glDepthMask(true);
+	glDepthMask(TRUE);
 	glDisable(GL_STENCIL_TEST);
 	glStencilMask(0xFFFFFFFF);
 	glStencilFunc(GL_EQUAL, 0x00000000, 0x00000001);
 	glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
 	glFrontFace(GL_CCW);
-	glCullFace(GL_BACK);
-	glEnable(GL_CULL_FACE);
+	//glCullFace(GL_BACK);
+	//glEnable(GL_CULL_FACE);
 	glClearColor(1.0, 0.0, 0.0, 0.0);
 	glClearDepth(1.0);
 	glClearStencil(0);
 	glDisable(GL_BLEND);
 	glDisable(GL_ALPHA_TEST);
 	glDisable(GL_DITHER);
-	glActiveTexture(GL_TEXTURE0);
+
+
+	 error = glGetError();
+
+	if (error != 0) {
+		debug.write("Failed to init settings s");
+		debug.write(error);
+	}
+
 }
 
 /**
@@ -107,8 +129,8 @@ void OpenGL::set_background(float bgcolor[4]){
 /**
 * Reset depth buffer
 **/
-void OpenGL::clear_depth(){
-	glClearDepth(1.0);
+void OpenGL::clear_bits(){
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 }
 
 /**
@@ -133,7 +155,7 @@ void OpenGL::release(int value){
 * @param Transform (of model to render)
 * @param Camera in the scene
 **/
-void OpenGL::update_resources(Transform *transform, Camera camera)
+void OpenGL::update_resources(Transform *transform, Camera *camera)
 {
 	/*Matrix4d position = Matrix::CreateTranslation(transform->position);
 	Matrix4d rotation = Matrix::CreateRotationX(transform->rotation.x) * Matrix::CreateRotationY(transform->rotation.y) * Matrix::CreateRotationZ(transform->rotation.z);
@@ -146,6 +168,18 @@ void OpenGL::update_resources(Transform *transform, Camera camera)
 	this->cbPerObj.WVP = WVP;
 	this->devcon->UpdateSubresource(this->cbPerObjectBuffer, 0, NULL, &this->cbPerObj, 0, 0);
 	this->devcon->VSSetConstantBuffers(0, 1, &this->cbPerObjectBuffer);*/
+
+	float projectionModelviewMatrix[16];
+
+	//Just set it to identity matrix
+	memset(projectionModelviewMatrix, 0, sizeof(float) * 16);
+	projectionModelviewMatrix[0] = 1.0;
+	projectionModelviewMatrix[5] = 1.0;
+	projectionModelviewMatrix[10] = 1.0;
+	projectionModelviewMatrix[15] = 1.0;
+
+	glUseProgram(this->ShaderProgram);
+	glUniformMatrix4fv(ProjectionModelviewMatrix_Loc, 1, FALSE, projectionModelviewMatrix);
 }
 
 /**
@@ -154,12 +188,6 @@ void OpenGL::update_resources(Transform *transform, Camera camera)
 **/
 void OpenGL::render_model(Model *model)
 {
-	/*UINT stride = sizeof(VERTEX);
-	UINT offset = 0;
-
-	this->devcon->IASetVertexBuffers(0, 1, &(model->vertexBuffer->buffer), &stride, &offset);
-	this->devcon->IASetIndexBuffer(model->indiciesBuffer->buffer, DXGI_FORMAT_R32_UINT, 0);
-	this->devcon->PSSetShaderResources(0, 1, &this->default_texture->texture);
-	this->devcon->PSSetSamplers(0, 1, &this->default_texture->SamplerState);
-	this->devcon->DrawIndexed(model->indices.size(), 0, 0);*/
+	glBindVertexArray(model->modelBuffer->buffer);
+	glDrawRangeElements(GL_TRIANGLES, 0, 3, 6, GL_UNSIGNED_SHORT, NULL);
 }

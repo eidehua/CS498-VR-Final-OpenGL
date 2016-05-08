@@ -48,14 +48,13 @@ void Scene::update_scene()
 **/
 void Scene::render_scene(OpenGL *opengl)
 {
-	opengl->set_background(Scene::bgcolor);
-	opengl->clear_depth();
+	opengl->clear_bits();
 
 	for (std::vector<GameObject *>::iterator it = this->game_objects.begin(); it != this->game_objects.end(); ++it)
 	{
 		Model *game_model = (Model *) (*it)->get_game_component(GameComponent::MODEL);
 		if ((*it)->get_game_component(GameComponent::MODEL) != NULL){
-			opengl->update_resources((Transform *) (*it)->get_game_component(GameComponent::TRANSFORM), this->camera);
+			opengl->update_resources((Transform *) (*it)->get_game_component(GameComponent::TRANSFORM), &this->camera);
 			opengl->render_model(game_model);
 		}
 	}

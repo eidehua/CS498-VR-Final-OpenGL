@@ -9,6 +9,7 @@ Model::Model()
 {
 	this->indiciesBuffer = new Buffer();
 	this->vertexBuffer = new Buffer();
+	this->modelBuffer = new Buffer();
 }
 
 /**
@@ -18,6 +19,7 @@ Model::~Model()
 {
 	delete this->indiciesBuffer;
 	delete this->vertexBuffer;
+	delete this->modelBuffer;
 }
 
 /**
