@@ -8,7 +8,7 @@
 class Buffer
 {
 public:
-	GLuint *buffer;
+	GLuint buffer;
 
 	Buffer();
 	~Buffer();

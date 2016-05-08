@@ -10,8 +10,10 @@ public:
 	std::vector<VERTEX> verts;
 	Buffer *vertexBuffer;
 
-	std::vector<unsigned int> indices;
+	std::vector<GLushort> indices;
 	Buffer *indiciesBuffer;
+
+	Buffer *modelBuffer;
 
 	Model();
 	~Model();

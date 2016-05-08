@@ -1,7 +1,14 @@
 #pragma once
 
-struct VERTEX {
-	float pX, pY, pZ, pW;
-	float tU, tV;
-	float nX, nY, nZ, nW;
+struct VERTEX
+{
+	float	x, y, z;
+	unsigned int	color;
+	float	padding[4];
 };
+
+/*struct VERTEX {
+	float pX, pY, pZ, pW;
+	unsigned int color;
+	float nX, nY, nZ, nW;
+};*/

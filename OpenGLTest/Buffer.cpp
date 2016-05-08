@@ -15,5 +15,5 @@ Buffer::Buffer()
 Buffer::~Buffer()
 {
 	if (this->buffer != NULL)
-		glDeleteBuffers(1, this->buffer);
+		glDeleteBuffers(1, &this->buffer);
 }
