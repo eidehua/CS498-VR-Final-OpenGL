@@ -63,7 +63,6 @@ SHORT sThumbRY;
 } XINPUT_GAMEPAD, *PXINPUT_GAMEPAD;
 */
 
-
 #define BUFFER_OFFSET(i) ((void*)(i))
 
 using namespace std;
@@ -75,6 +74,7 @@ OpenGL opengl;
 Scene scene;
 
 CXBOXController* Player1;
+
 ovrHmd HMD;
 ovrGraphicsLuid luid;
 GLFWwindow * window;
@@ -82,6 +82,7 @@ GLFWwindow * window;
 void update() {
 	scene.render_scene(&opengl);
 }
+
 void draw() {
 
 	double           ftiming = ovr_GetPredictedDisplayTime(HMD, 0);
@@ -92,7 +93,6 @@ void draw() {
 	glClearColor(1.0, 1.0, 0.0, 0.0);
 	scene.render_scene(&opengl);
 }
-
 
 void setupVR() {
 
@@ -135,7 +135,6 @@ int main(int argc, char* argv[]){
 
 	debug.init(debug.VERBOSE);
 
-	//glutInit(&argc, argv);
 	if (!glfwInit()) {
 		exit(EXIT_FAILURE);
 	}
@@ -148,11 +147,9 @@ int main(int argc, char* argv[]){
 	}
 	glfwMakeContextCurrent(window);
 	glfwSetKeyCallback(window, key_callback);
-	opengl.init(1000, 1000); //sets up openGL
 
-	Player1 = new CXBOXController(1);
-
-	opengl.init(1600, 700);
+	Player1 = new CXBOXController(1); //setup player controller
+	opengl.init(1600, 700); //sets up openGL
 
 	GameObject *box = new GameObject();
 	Model *model = new Model();
@@ -162,11 +159,11 @@ int main(int argc, char* argv[]){
 	opengl.init_buffer(model->vertexBuffer, model->verts, GL_ARRAY_BUFFER);
 	opengl.init_buffer(model->indiciesBuffer, model->indices, GL_ELEMENT_ARRAY_BUFFER);
 	opengl.bind_vertex_indices(model);
-	//glutDisplayFunc(draw);
-	//glutReshapeFunc(reshape);
-	mainLoop();
-	//glutMainLoop();
+	scene.add_game_object(box);
 
+	mainLoop();
+	
+	//Shutdown process
 	ovr_Destroy(HMD);
 	ovr_Shutdown();
 	//OVR::System::Destroy();
@@ -174,12 +171,6 @@ int main(int argc, char* argv[]){
 	glfwDestroyWindow(window);
 	glfwTerminate();
 	exit(EXIT_SUCCESS);
-
-	scene.add_game_object(box);
-
-	glutDisplayFunc(update);
-
-	glutMainLoop();
 
 	/*while (true)
 	{
@@ -213,6 +204,4 @@ int main(int argc, char* argv[]){
 			break;
 		}
 	}*/
-
-	return 0;
 }
