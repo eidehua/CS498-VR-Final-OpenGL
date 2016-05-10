@@ -1,14 +1,18 @@
 #pragma once
 
-#include <Eigen/Dense>
+#include <glm/vec3.hpp> // glm::vec3
 
 #include "OpenGL.h"
 #include "GameObject.h"
 #include "Camera.h"
 #include "Model.h"
 
+using glm::vec3;
+
 class Scene{
 public:
+	Camera camera;
+
 	Scene();
 	Scene(const wchar_t *filename);
 	~Scene();
@@ -23,7 +27,6 @@ public:
 	bool delete_game_object(int pos);
 
 private:
-	Camera camera;
 
 	float bgcolor[4];
 

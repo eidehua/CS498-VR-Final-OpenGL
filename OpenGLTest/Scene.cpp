@@ -1,20 +1,18 @@
 #include "Scene.h"
 
-using Eigen::Vector3f;
-using Eigen::Vector4f;
-
 /**
 * Default constructor
 * Background color is Blue
 **/
 Scene::Scene()
 {
-	this->bgcolor[0] = 0.0;
-	this->bgcolor[1] = 0.0;
-	this->bgcolor[2] = 1.0;
+	this->bgcolor[0] = 0.25;
+	this->bgcolor[1] = 0.25;
+	this->bgcolor[2] = 0.25;
 	this->bgcolor[3] = 1.0;
-	this->camera.position = Vector3f(20.0, 20.0, 20.0);
-	this->camera.up = Vector3f(0.0, 0.0, 1.0);
+	this->camera.position = vec3(5.0, 0.0, 0.0);
+	this->camera.look_at = vec3(4.0, 0.0, 0.0);
+	this->camera.up = vec3(0.0, 1.0, 0.0);
 }
 
 /**
@@ -48,6 +46,7 @@ void Scene::update_scene()
 **/
 void Scene::render_scene(OpenGL *opengl)
 {
+	opengl->set_background(this->bgcolor);
 	opengl->clear_bits();
 
 	for (std::vector<GameObject *>::iterator it = this->game_objects.begin(); it != this->game_objects.end(); ++it)

@@ -23,8 +23,6 @@
 #include <GLFW/glfw3.h>
 #include <GLFW/glfw3native.h>
 
-#include <OVR_CAPI_GL.h>
-
 #include "OpenGL.h"
 #include "Scene.h"
 #include "Vertex.h"
@@ -75,30 +73,12 @@ Scene scene;
 
 CXBOXController* Player1;
 
-ovrHmd HMD;
-ovrGraphicsLuid luid;
 GLFWwindow * window;
-
-void update() {
-	scene.render_scene(&opengl);
-}
 
 void draw() {
 
-	double           ftiming = ovr_GetPredictedDisplayTime(HMD, 0);
-
-	ovrTrackingState hmdState = ovr_GetTrackingState(HMD, ftiming, ovrTrue);
-
-
 	glClearColor(1.0, 1.0, 0.0, 0.0);
 	scene.render_scene(&opengl);
-}
-
-void setupVR() {
-
-	ovrResult result = ovr_Create(&HMD, &luid);
-	ovrHmdDesc hmdDesc = ovr_GetHmdDesc(HMD);
-	ovrSizei windowSize = { hmdDesc.Resolution.w / 2, hmdDesc.Resolution.h / 2 };
 }
 
 void mainLoop() {
@@ -120,18 +100,17 @@ static void error_callback(int error, const char* description){
 }
 
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods){
+	if (key == GLFW_KEY_W) {
+		scene.camera.position.x -= 1.0;
+	}
+	if (key == GLFW_KEY_S) {
+		scene.camera.position.x += 1.0;
+	}
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, GL_TRUE);
 }
 
 int main(int argc, char* argv[]){
-	//OVR::System::Init();
-
-	ovrResult result = ovr_Initialize(nullptr);
-	//VALIDATE(OVR_SUCCESS(result), "Failed to initialize libOVR.");
-	if (!OVR_SUCCESS(result)) {
-		exit(1);
-	}
 
 	debug.init(debug.VERBOSE);
 
@@ -140,7 +119,7 @@ int main(int argc, char* argv[]){
 	}
 
 	//Now setup glfw stuff
-	window = glfwCreateWindow(1000, 1000, "4D VR", NULL, NULL); //glfwGetPrimaryMonitor() for first NULL for full screen
+	window = glfwCreateWindow(800, 600, "4D VR", NULL, NULL); //glfwGetPrimaryMonitor() for first NULL for full screen
 	if (!window) {
 		glfwTerminate();
 		exit(EXIT_FAILURE);
@@ -151,22 +130,25 @@ int main(int argc, char* argv[]){
 	Player1 = new CXBOXController(1); //setup player controller
 	opengl.init(1600, 700); //sets up openGL
 
-	GameObject *box = new GameObject();
-	Model *model = new Model();
-	model->init_from_obj_file(L"square.obj");
-	box->add_game_component((GameComponent *) model);
+	/*GameObject *room = new GameObject(vec3(0,0,0), vec3(0,0,0), vec3(3,3,2));
+	Model *room_model = new Model();
+	room_model->init_from_obj_file(L"box_blue.obj");
+	room->add_game_component((GameComponent *)room_model);
+	opengl.init_buffer(room_model->vertexBuffer, room_model->verts, GL_ARRAY_BUFFER);
+	opengl.init_buffer(room_model->indiciesBuffer, room_model->indices, GL_ELEMENT_ARRAY_BUFFER);
+	opengl.bind_vertex_indices(room_model);
+	scene.add_game_object(room);*/
 
-	opengl.init_buffer(model->vertexBuffer, model->verts, GL_ARRAY_BUFFER);
-	opengl.init_buffer(model->indiciesBuffer, model->indices, GL_ELEMENT_ARRAY_BUFFER);
-	opengl.bind_vertex_indices(model);
+	GameObject *box = new GameObject(vec3(0, 0, 0), vec3(0, 0, 0), vec3(1, 1, 1));
+	Model *box_model = new Model();
+	box_model->init_from_obj_file(L"box_red.obj");
+	box->add_game_component((GameComponent *)box_model);
+	opengl.init_buffer(box_model->vertexBuffer, box_model->verts, GL_ARRAY_BUFFER);
+	opengl.init_buffer(box_model->indiciesBuffer, box_model->indices, GL_ELEMENT_ARRAY_BUFFER);
+	opengl.bind_vertex_indices(box_model);
 	scene.add_game_object(box);
-
-	mainLoop();
 	
-	//Shutdown process
-	ovr_Destroy(HMD);
-	ovr_Shutdown();
-	//OVR::System::Destroy();
+	mainLoop();
 
 	glfwDestroyWindow(window);
 	glfwTerminate();

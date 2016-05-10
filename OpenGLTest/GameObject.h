@@ -1,20 +1,19 @@
 #pragma once
 #include <vector>
 #include <string>
-#include <Eigen/Dense>
+#include <glm/vec3.hpp> // glm::vec3
 
 #include "GameComponent.h"
 #include "Transfrom.h"
 
-using Eigen::Vector3f;
-using Eigen::Vector4f;
+using glm::vec3;
 
 class GameObject
 {
 public:
 	//Constructors
 	GameObject();
-	GameObject(Vector4f pos, Vector4f rot, Vector4f scale);
+	GameObject(vec3 pos, vec3 rot, vec3 scale);
 	GameObject(Transform transform);
 
 	//Get and Setters

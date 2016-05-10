@@ -1,8 +1,5 @@
 #include "GameObject.h"
 
-using Eigen::Vector3f;
-using Eigen::Vector4f;
-
 /**
 * Standard Constructor, 0.0'd transform
 **/
@@ -18,7 +15,7 @@ GameObject::GameObject()
 * @param Vector3 (rotation)
 * @param Vector3 (scale)
 **/
-GameObject::GameObject(Vector4f pos, Vector4f rot, Vector4f scale)
+GameObject::GameObject(vec3 pos, vec3 rot, vec3 scale)
 {
 	Transform *transform = new Transform(pos, rot, scale);
 	this->add_game_component((GameComponent *) transform);

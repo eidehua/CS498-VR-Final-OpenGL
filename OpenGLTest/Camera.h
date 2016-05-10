@@ -1,18 +1,18 @@
 #pragma once
 
-#include <Eigen/Dense>
+#include <glm/vec3.hpp> // glm::vec3
 
-using Eigen::Vector3f;
+using glm::vec3;
 
 class Camera
 {
 public:
 	//Constructors
 	Camera();
-	Camera(Vector3f pos, Vector3f look_at, Vector3f up);
+	Camera(vec3 pos, vec3 look_at, vec3 up);
 	
 	//Attributes
-	Vector3f position;
-	Vector3f look_at;
-	Vector3f up;
+	vec3 position;
+	vec3 look_at;
+	vec3 up;
 };

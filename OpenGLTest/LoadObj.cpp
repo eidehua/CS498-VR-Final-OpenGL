@@ -1,11 +1,4 @@
 #include "LoadObj.h"
-#include "Debug.h"
-
-using Eigen::Vector2f;
-using Eigen::Vector3f;
-using Eigen::Vector4f;
-
-extern Debug debug;
 
 /**
 * Load the vertex and normal information from a obj file
@@ -29,18 +22,22 @@ bool init_model_from_obj(const wchar_t *filename, Model *model){
 		return false;
 	}
 	
-	std::vector<Vector2f> vertex_texture;
-	std::vector<Vector4f> vertex_normal;
+	//std::vector<vec2> vertex_texture;
+	//std::vector<vec4> vertex_normal;
 
-	float x, y, z, w;
+	float x, y, z;
 	int a, b, c, d, e, f, g, h, i;
 	std::string line;
+	unsigned int color = 0xffff00;
 
-	while (getline(obj_file, line)){
+	while (getline(obj_file, line)) {
 		// Found new vertex
+		if (line[0] == 'c' && line[1] == ' ') {
+			sscanf_s(&line[0], "c 0x%x", &color);
+		}
 		if (line[0] == 'v' && line[1] == ' '){
-			sscanf_s(&line[0], "v %f %f %f %f", &x, &y, &z, &w);
-			model->verts.push_back({ x, y, z, 0xff0000});
+			sscanf_s(&line[0], "v %f %f %f", &x, &y, &z);
+			model->verts.push_back({ x, y, z, color});
 		}
 		// Found new texture mapping coord
 		/*else if (line[0] == 'v' && line[1] == 't'){
@@ -48,10 +45,10 @@ bool init_model_from_obj(const wchar_t *filename, Model *model){
 			vertex_texture.push_back(Vector2f( x, 1.0f - y ));
 		}*/
 		// Found new normal
-		else if (line[0] == 'v' && line[1] == 'n'){
+		/*else if (line[0] == 'v' && line[1] == 'n'){
 			sscanf_s(&line[0], "vn %f %f %f %f", &x, &y, &z, &w);
-			vertex_normal.push_back(Vector4f( x, y, z, w ));
-		}
+			vertex_normal.push_back({ x, y, z, w });
+		}*/
 		// Found new face
 		else if (line[0] == 'f'){
 			sscanf_s(&line[0], "f %d//%d %d//%d %d//%d", &a, &g, &b, &h, &c, &i);

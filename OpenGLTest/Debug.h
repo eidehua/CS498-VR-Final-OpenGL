@@ -39,3 +39,5 @@ public:
 	//File to print too
 	std::ofstream debug_file;
 };
+
+extern Debug debug;

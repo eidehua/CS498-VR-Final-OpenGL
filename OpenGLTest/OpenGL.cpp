@@ -1,8 +1,4 @@
 #include "OpenGL.h"
-#include <GLFW/glfw3.h>
-#include <GLFW/glfw3native.h>
-using Eigen::Matrix4d;
-
 
 /**
 * Standard Constructor
@@ -85,7 +81,8 @@ void OpenGL::set_settings(){
 	GLenum error = glGetError();
 
 	glShadeModel(GL_SMOOTH);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glReadBuffer(GL_BACK);
 	glDrawBuffer(GL_BACK);
 	glEnable(GL_DEPTH_TEST);
@@ -154,29 +151,24 @@ void OpenGL::release(int value){
 **/
 void OpenGL::update_resources(Transform *transform, Camera *camera)
 {
-	/*Matrix4d position = Matrix::CreateTranslation(transform->position);
-	Matrix4d rotation = Matrix::CreateRotationX(transform->rotation.x) * Matrix::CreateRotationY(transform->rotation.y) * Matrix::CreateRotationZ(transform->rotation.z);
-	Matrix4d scale = Matrix::CreateScale(transform->scale);
+	glm::mat4 Projection = glm::perspective(glm::radians(45.0f), (float)4 / (float)3, 0.1f, 100.0f);
 
-	Matrix World = scale * rotation * position;
-	Matrix WVP = World * Matrix::CreateLookAt(camera.position, camera.look_at, camera.up) * this->projection;
+	glm::mat4 View = glm::lookAt(
+		camera->position,
+		camera->look_at,
+		camera->up
+		);
 
-	this->cbPerObj.World = World;
-	this->cbPerObj.WVP = WVP;
-	this->devcon->UpdateSubresource(this->cbPerObjectBuffer, 0, NULL, &this->cbPerObj, 0, 0);
-	this->devcon->VSSetConstantBuffers(0, 1, &this->cbPerObjectBuffer);*/
-
-	float projectionModelviewMatrix[16];
-
-	//Just set it to identity matrix
-	memset(projectionModelviewMatrix, 0, sizeof(float) * 16);
-	projectionModelviewMatrix[0] = 1.0;
-	projectionModelviewMatrix[5] = 1.0;
-	projectionModelviewMatrix[10] = 1.0;
-	projectionModelviewMatrix[15] = 1.0;
+	glm::mat4 Model = glm::mat4(1.0f);
+	glm::scale(Model, transform->scale);
+	glm::rotate(Model, transform->rotation.x, vec3(1, 0, 0));
+	glm::rotate(Model, transform->rotation.y, vec3(0, 1, 0));
+	glm::rotate(Model, transform->rotation.z, vec3(0, 0, 1));
+	glm::translate(Model, transform->position);
+	glm::mat4 mvp = Projection * View * Model;
 
 	glUseProgram(this->ShaderProgram);
-	glUniformMatrix4fv(ProjectionModelviewMatrix_Loc, 1, FALSE, projectionModelviewMatrix);
+	glUniformMatrix4fv(ProjectionModelviewMatrix_Loc, 1, FALSE, &mvp[0][0]);
 }
 
 /**
@@ -186,5 +178,5 @@ void OpenGL::update_resources(Transform *transform, Camera *camera)
 void OpenGL::render_model(Model *model)
 {
 	glBindVertexArray(model->modelBuffer->buffer);
-	glDrawRangeElements(GL_TRIANGLES, 0, 3, 6, GL_UNSIGNED_SHORT, NULL);
+	glDrawRangeElements(GL_TRIANGLES, 0, 3, model->indices.size(), GL_UNSIGNED_SHORT, NULL);
 }
