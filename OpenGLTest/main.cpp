@@ -23,6 +23,8 @@
 #include <GLFW/glfw3.h>
 #include <GLFW/glfw3native.h>
 
+#include <OVR_CAPI_GL.h>
+
 #include "OpenGL.h"
 #include "Scene.h"
 #include "Vertex.h"
@@ -73,12 +75,25 @@ Scene scene;
 
 CXBOXController* Player1;
 
+ovrHmd HMD;
+ovrGraphicsLuid luid;
 GLFWwindow * window;
 
 void draw() {
 
-	glClearColor(1.0, 1.0, 0.0, 0.0);
+	double           ftiming = ovr_GetPredictedDisplayTime(HMD, 0);
+
+	ovrTrackingState hmdState = ovr_GetTrackingState(HMD, ftiming, ovrTrue);
+
+	//glClearColor(1.0, 1.0, 0.0, 0.0);
 	scene.render_scene(&opengl);
+}
+
+void setupVR() {
+
+	ovrResult result = ovr_Create(&HMD, &luid);
+	ovrHmdDesc hmdDesc = ovr_GetHmdDesc(HMD);
+	ovrSizei windowSize = { hmdDesc.Resolution.w / 2, hmdDesc.Resolution.h / 2 };
 }
 
 void mainLoop() {
@@ -90,6 +105,7 @@ void mainLoop() {
 		glViewport(0, 0, width, height);
 
 		draw();
+
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
@@ -111,21 +127,32 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 }
 
 int main(int argc, char* argv[]){
+	//OVR::System::Init();
+
+	ovrResult result = ovr_Initialize(nullptr);
+	//VALIDATE(OVR_SUCCESS(result), "Failed to initialize libOVR.");
+	if (!OVR_SUCCESS(result)) {
+		exit(1);
+	}
 
 	debug.init(debug.VERBOSE);
+
+	setupVR();
 
 	if (!glfwInit()) {
 		exit(EXIT_FAILURE);
 	}
 
 	//Now setup glfw stuff
-	window = glfwCreateWindow(800, 600, "4D VR", NULL, NULL); //glfwGetPrimaryMonitor() for first NULL for full screen
+	window = glfwCreateWindow(1600, 700, "4D VR", NULL, NULL); //glfwGetPrimaryMonitor() for first NULL for full screen
 	if (!window) {
 		glfwTerminate();
 		exit(EXIT_FAILURE);
 	}
 	glfwMakeContextCurrent(window);
 	glfwSetKeyCallback(window, key_callback);
+
+	
 
 	Player1 = new CXBOXController(1); //setup player controller
 	opengl.init(1600, 700); //sets up openGL
@@ -147,8 +174,13 @@ int main(int argc, char* argv[]){
 	opengl.init_buffer(box_model->indiciesBuffer, box_model->indices, GL_ELEMENT_ARRAY_BUFFER);
 	opengl.bind_vertex_indices(box_model);
 	scene.add_game_object(box);
-	
+
 	mainLoop();
+	
+	//Shutdown process
+	ovr_Destroy(HMD);
+	ovr_Shutdown();
+	//OVR::System::Destroy();
 
 	glfwDestroyWindow(window);
 	glfwTerminate();
