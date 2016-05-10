@@ -103,10 +103,11 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>U:\CS498SL Virtual Reality\GitHubVisualStudio\CS498-VR-Final-OpenGL\LibOVR\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>U:\CS498SL Virtual Reality\GitHubVisualStudio\CS498-VR-Final-OpenGL\LibOVR\Include;C:\Users\emsauer2\Desktop\CS498-VR-Final-OpenGL\LibOVR\Include;C:\Users\emsauer2\Desktop\CS498-VR-Final-OpenGL\LibOVRKernel\Src;$(OVRSDKROOT)LibOVRKernel/Src/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
@@ -159,7 +160,7 @@
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="LoadObj.cpp" />
     <ClCompile Include="load_file.cpp" />
-    <ClCompile Include="main.cpp" />
+    <ClCompile Include="main2.cpp" />
     <ClCompile Include="Math.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="OpenGL.cpp" />
@@ -181,6 +182,7 @@
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Transfrom.h" />
     <ClInclude Include="Vertex.h" />
+    <ClInclude Include="Win32_GLAppUtil.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="debug.txt" />

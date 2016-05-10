@@ -44,7 +44,7 @@ void Scene::update_scene()
 * - Goes through each game object and renders the model if it exists
 * @param DX11 (Directx object)
 **/
-void Scene::render_scene(OpenGL *opengl)
+void Scene::render_scene(OpenGL *opengl, glm::mat4 view, glm::mat4 proj)
 {
 	opengl->set_background(this->bgcolor);
 	opengl->clear_bits();
@@ -53,7 +53,7 @@ void Scene::render_scene(OpenGL *opengl)
 	{
 		Model *game_model = (Model *) (*it)->get_game_component(GameComponent::MODEL);
 		if ((*it)->get_game_component(GameComponent::MODEL) != NULL){
-			opengl->update_resources((Transform *) (*it)->get_game_component(GameComponent::TRANSFORM), &this->camera);
+			opengl->update_resources((Transform *) (*it)->get_game_component(GameComponent::TRANSFORM), &this->camera, view, proj);
 			opengl->render_model(game_model);
 		}
 	}

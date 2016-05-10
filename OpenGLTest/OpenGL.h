@@ -1,23 +1,12 @@
 #pragma once
-#if defined(_WIN32)
-#define GLFW_EXPOSE_NATIVE_WIN32
-#define GLFW_EXPOSE_NATIVE_WGL
-#define OVR_OS_WIN32
-#elif defined(__APPLE__)
-#define GLFW_EXPOSE_NATIVE_COCOA
-#define GLFW_EXPOSE_NATIVE_NSGL
-#define OVR_OS_MAC
-#elif defined(__linux__)
-#define GLFW_EXPOSE_NATIVE_X11
-#define GLFW_EXPOSE_NATIVE_GLX
-#define OVR_OS_LINUX
-#endif
 
 #include <glm/vec3.hpp> // glm::vec3
 #include <glm/vec4.hpp> // glm::vec4
 #include <glm/mat4x4.hpp> // glm::mat4
+#include <glm/gtx/string_cast.hpp>
 #include <glm/gtc/matrix_transform.hpp> // glm::translate, glm::rotate, glm::scale, glm::perspective
 
+#include "GL/CAPI_GLE.h"
 #include "load_file.h"
 
 #include "Math.h"
@@ -53,7 +42,7 @@ public:
 	void update_swapchain();
 	void release(int value);
 
-	void update_resources(Transform *transform, Camera *camera);
+	void update_resources(Transform *transform, Camera *camera, glm::mat4 view, glm::mat4 proj);
 	void render_model(Model *model);
 
 	template <typename T>

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <glm/vec3.hpp> // glm::vec3
+#include <glm/mat4x4.hpp>
 
 #include "OpenGL.h"
 #include "GameObject.h"
@@ -19,7 +20,7 @@ public:
 
 	//Update and Render
 	void update_scene();
-	void render_scene(OpenGL *opengl);
+	void render_scene(OpenGL *opengl, glm::mat4 view, glm::mat4 proj);
 
 	//Add/Delete GameObjects from Scene
 	int add_game_object(GameObject *game_object);

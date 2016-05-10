@@ -24,6 +24,8 @@
 #include <GLFW/glfw3native.h>
 
 #include <OVR_CAPI_GL.h>
+#include "Win32_GLAppUtil.h"
+#include "Kernel/OVR_System.h"
 
 #include "OpenGL.h"
 #include "Scene.h"
@@ -75,9 +77,12 @@ Scene scene;
 
 CXBOXController* Player1;
 
-ovrHmd HMD;
+ovrSession HMD;
 ovrGraphicsLuid luid;
 GLFWwindow * window;
+
+// Global OpenGL state
+//static OGL Platform;
 
 void draw() {
 
@@ -94,6 +99,10 @@ void setupVR() {
 	ovrResult result = ovr_Create(&HMD, &luid);
 	ovrHmdDesc hmdDesc = ovr_GetHmdDesc(HMD);
 	ovrSizei windowSize = { hmdDesc.Resolution.w / 2, hmdDesc.Resolution.h / 2 };
+	//ovrSizei windowSize = { hmdDesc.Resolution.w / 2, hmdDesc.Resolution.h / 2 };
+	//if (!Platform.InitDevice(windowSize.w, windowSize.h, reinterpret_cast<LUID*>(&luid)))
+		//goto Done;
+	
 }
 
 void mainLoop() {
@@ -145,13 +154,16 @@ int main(int argc, char* argv[]){
 
 	//Now setup glfw stuff
 	window = glfwCreateWindow(1600, 700, "4D VR", NULL, NULL); //glfwGetPrimaryMonitor() for first NULL for full screen
+	//ovrHmd_AttachToWindow(HMD, glfwGetWin32Window(window), NULL, NULL);
+	
 	if (!window) {
 		glfwTerminate();
 		exit(EXIT_FAILURE);
 	}
 	glfwMakeContextCurrent(window);
+	glfwShowWindow(window);
 	glfwSetKeyCallback(window, key_callback);
-
+	
 	
 
 	Player1 = new CXBOXController(1); //setup player controller

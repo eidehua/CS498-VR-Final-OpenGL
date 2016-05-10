@@ -24,7 +24,9 @@ bool OpenGL::init(int window_width, int window_height){
 	if (!init_viewport(window_width, window_height))
 		debug.write("DirectX11:init:Failed to init viewport");
 */
+	/*
 	GLenum err = glewInit();
+
 	if (err != GLEW_OK)
 	{
 		//Problem: glewInit failed, something is seriously wrong.
@@ -32,6 +34,7 @@ bool OpenGL::init(int window_width, int window_height){
 		debug.write(err);
 		exit(1);
 	}
+	*/
 
 	set_settings();
 
@@ -94,7 +97,7 @@ void OpenGL::set_settings(){
 	glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
 	glFrontFace(GL_CCW);
 	//glCullFace(GL_BACK);
-	//glEnable(GL_CULL_FACE);
+	glDisable(GL_CULL_FACE); //need to disable because it is enabled in the sample code somewhere
 	glClearColor(1.0, 0.0, 0.0, 0.0);
 	glClearDepth(1.0);
 	glClearStencil(0);
@@ -149,7 +152,7 @@ void OpenGL::release(int value){
 * @param Transform (of model to render)
 * @param Camera in the scene
 **/
-void OpenGL::update_resources(Transform *transform, Camera *camera)
+void OpenGL::update_resources(Transform *transform, Camera *camera,  glm::mat4 view, glm::mat4 proj)
 {
 	glm::mat4 Projection = glm::perspective(glm::radians(45.0f), (float)4 / (float)3, 0.1f, 100.0f);
 
@@ -165,7 +168,9 @@ void OpenGL::update_resources(Transform *transform, Camera *camera)
 	glm::rotate(Model, transform->rotation.y, vec3(0, 1, 0));
 	glm::rotate(Model, transform->rotation.z, vec3(0, 0, 1));
 	glm::translate(Model, transform->position);
-	glm::mat4 mvp = Projection * View * Model;
+	glm::mat4 mvp = proj * view * Model;
+
+	debug.write(glm::to_string(view));
 
 	glUseProgram(this->ShaderProgram);
 	glUniformMatrix4fv(ProjectionModelviewMatrix_Loc, 1, FALSE, &mvp[0][0]);
