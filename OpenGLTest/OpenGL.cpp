@@ -89,8 +89,8 @@ void OpenGL::set_settings(){
 	GLenum error = glGetError();
 
 	glShadeModel(GL_SMOOTH);
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glReadBuffer(GL_BACK);
 	glDrawBuffer(GL_BACK);
 	glEnable(GL_DEPTH_TEST);
@@ -179,9 +179,11 @@ void  Calc4Matrix(
 	glm::vec4 *Wa,
 	glm::vec4 *Wb,
 	glm::vec4 *Wc,
-	glm::vec4 *Wd)
+	glm::vec4 *Wd,
+	glm::vec4 From,
+	glm::vec4 To)
 {
-	glm::vec4  From(0.0f,0.0f,0.0f,4.0f),  To(0.0f,0.0f,0.0f,0.0f);    // 4D From and To Points
+	//glm::vec4 To(0.0f,0.0f,0.0f,0.0f);    // 4D From and To Points
 	glm::vec4 Up(0.0f,1.0f,0.0f,0.0f), Over(0.0f,0.0f,1.0f,0.0f);    // 4D Up and Over Vectors
 	double norm;    // Vector Norm
 
@@ -219,33 +221,22 @@ void  Calc4Matrix(
 * @param Transform (of model to render)
 * @param Camera in the scene
 **/
-void OpenGL::update_resources(Model * model, Transform *transform, Camera *camera,  glm::mat4 view, glm::mat4 proj)
+void OpenGL::update_resources(Model * model, Transform *transform, Camera *camera,  glm::mat4 view, glm::mat4 proj, glm::vec4 To)
 {
 	glm::vec4  From(0.0f, 0.0f, 0.0f, 4.0f);
-	glm::vec4  Wa, Wb, Wc, Wd; // 4D Transformation Matrix Column Vectors
-	Calc4Matrix(&Wa, &Wb, &Wc, &Wd);
+	if (model->autoRotate) {
+		w_pos += w_move;
 
-	//PROJECT perspective
-	double  S, T;    // Divisor Values
-	glm::vec4 V;      // Scratch Vector
+		if (w_pos < 3.0f)
+			w_move = -w_move;
+		if (w_pos > 4.0f)
+			w_move = -w_move;
 
-	T = 1 / tan(45.0 / 2.0);
-
-	for (int i = 0; i < model->verts4D.size(); ++i) {
-		V = glm::vec4(model->verts4D[i].x, model->verts4D[i].y, model->verts4D[i].z, model->verts4D[i].w) - From;//VecSub(V, VertList[i].Position, From);
-
-		S = T / glm::dot(V, Wd);
-
-		debug.write(S * glm::dot(V, Wa));
-		debug.write(S * glm::dot(V, Wb));
-		debug.write(S * glm::dot(V, Wc));
+		From[3] = this->w_pos;
 	}
 
-	glUniform4fv(From_loc, 1, &From[0]);
-	glUniform4fv(Wa_loc, 1, &Wa[0]);
-	glUniform4fv(Wb_loc, 1, &Wb[0]);
-	glUniform4fv(Wc_loc, 1, &Wc[0]);
-	glUniform4fv(Wd_loc, 1, &Wd[0]);
+	glm::vec4  Wa, Wb, Wc, Wd; // 4D Transformation Matrix Column Vectors
+	Calc4Matrix(&Wa, &Wb, &Wc, &Wd, From, To);
 
 	glm::mat4 Projection = glm::perspective(glm::radians(45.0f), (float)4 / (float)3, 0.1f, 100.0f);
 
@@ -263,6 +254,45 @@ void OpenGL::update_resources(Model * model, Transform *transform, Camera *camer
 	glm::translate(Model, transform->position);
 	glm::mat4 mvp = proj * view * Model;
 
+	//PROJECT perspective
+	double  S, T;    // Divisor Values
+	glm::vec4 V;      // Scratch Vector
+
+	T = 1 / tan(45.0 / 2.0);
+
+	for (int i = 0; i < model->verts4D.size(); ++i) {
+		V = glm::vec4(model->verts4D[i].x, model->verts4D[i].y, model->verts4D[i].z, model->verts4D[i].w) - From;//VecSub(V, VertList[i].Position, From);
+
+		S = T / glm::dot(V, Wd);
+
+		double x = S * glm::dot(V, Wa);
+		double y = S * glm::dot(V, Wb);
+		double z = S * glm::dot(V, Wc);
+
+		//glm::vec4 pos(x, y, z, 1.0f);
+		//pos = Model * pos;
+
+		debug.write(x);
+		debug.write(y);
+		debug.write(z);
+
+		model->verts2[i].x = x;
+		model->verts2[i].y = y;
+		model->verts2[i].z = z;
+		
+	}
+
+	vector<VERTEX> &data = model->verts2;
+	//glBindBuffer(GL_ARRAY_BUFFER, model->vertexBuffer->buffer);
+	//glBufferSubData(GL_ARRAY_BUFFER, 0, data.size() * sizeof(T),  &data[0]);
+	//glBufferData(type, data.size() * sizeof(T), &data[0], buffer_type);
+
+	glUniform4fv(From_loc, 1, &From[0]);
+	glUniform4fv(Wa_loc, 1, &Wa[0]);
+	glUniform4fv(Wb_loc, 1, &Wb[0]);
+	glUniform4fv(Wc_loc, 1, &Wc[0]);
+	glUniform4fv(Wd_loc, 1, &Wd[0]);
+
 	glUseProgram(this->ShaderProgram);
 	glUniformMatrix4fv(ProjectionModelviewMatrix_Loc, 1, FALSE, &mvp[0][0]);
 }
@@ -274,5 +304,135 @@ void OpenGL::update_resources(Model * model, Transform *transform, Camera *camer
 void OpenGL::render_model(Model *model)
 {
 	glBindVertexArray(model->modelBuffer->buffer);
-	glDrawRangeElements(GL_TRIANGLES, 0, 3, model->indices.size(), GL_UNSIGNED_SHORT, NULL);
+	//glDrawRangeElements(GL_LINE_STRIP, 0, 3, model->indices.size(), GL_UNSIGNED_SHORT, NULL);
+	//glDrawElements(GL_TRIANGLES, model->indices.size(), GL_UNSIGNED_SHORT, NULL);
+
+	glColor3f(1.0, 0.0, 0.0);
+	//front face front cube
+	glBegin(GL_LINE_LOOP);
+	glVertex3f(model->verts2[0].x,  model->verts2[0].y, model->verts2[0].z);
+	glVertex3f(model->verts2[1].x, model->verts2[1].y, model->verts2[1].z);
+	glVertex3f(model->verts2[2].x, model->verts2[2].y, model->verts2[2].z);
+	glVertex3f(model->verts2[3].x, model->verts2[3].y, model->verts2[3].z);
+	glEnd();
+
+	//top face front cube
+	glBegin(GL_LINE_LOOP);
+	glVertex3f(model->verts2[3].x, model->verts2[3].y, model->verts2[3].z);
+	glVertex3f(model->verts2[2].x, model->verts2[2].y, model->verts2[2].z);
+	glVertex3f(model->verts2[6].x, model->verts2[6].y, model->verts2[6].z);
+	glVertex3f(model->verts2[7].x, model->verts2[7].y, model->verts2[7].z);
+	glEnd();
+
+	//right face front cube
+	glBegin(GL_LINE_LOOP);
+	glVertex3f(model->verts2[1].x, model->verts2[1].y, model->verts2[1].z);
+	glVertex3f(model->verts2[5].x, model->verts2[5].y, model->verts2[5].z);
+	glVertex3f(model->verts2[6].x, model->verts2[6].y, model->verts2[6].z);
+	glVertex3f(model->verts2[2].x, model->verts2[2].y, model->verts2[2].z);
+	glEnd();
+
+	//left face front cube
+	glBegin(GL_LINE_LOOP);
+	glVertex3f(model->verts2[0].x, model->verts2[0].y, model->verts2[0].z);
+	glVertex3f(model->verts2[3].x, model->verts2[3].y, model->verts2[3].z);
+	glVertex3f(model->verts2[7].x, model->verts2[7].y, model->verts2[7].z);
+	glVertex3f(model->verts2[4].x, model->verts2[4].y, model->verts2[4].z);
+	glEnd();
+
+	//bottom face front cube
+	glBegin(GL_LINE_LOOP);
+	glVertex3f(model->verts2[0].x, model->verts2[0].y, model->verts2[0].z);
+	glVertex3f(model->verts2[4].x, model->verts2[4].y, model->verts2[4].z);
+	glVertex3f(model->verts2[5].x, model->verts2[5].y, model->verts2[5].z);
+	glVertex3f(model->verts2[1].x, model->verts2[1].y, model->verts2[1].z);
+	glEnd();
+
+	//back face front cube
+	glBegin(GL_LINE_LOOP);
+	glVertex3f(model->verts2[4].x, model->verts2[4].y, model->verts2[4].z);
+	glVertex3f(model->verts2[7].x, model->verts2[7].y, model->verts2[7].z);
+	glVertex3f(model->verts2[6].x, model->verts2[6].y, model->verts2[6].z);
+	glVertex3f(model->verts2[5].x, model->verts2[5].y, model->verts2[5].z);
+	glEnd();
+
+
+	glColor3f(0.0, 0.0, 1.0);
+	//back face back cube
+	glBegin(GL_LINE_LOOP);
+	glVertex3f(model->verts2[8 + 0].x, model->verts2[8 + 0].y, model->verts2[8 + 0].z);
+	glVertex3f(model->verts2[8 + 1].x, model->verts2[8 + 1].y, model->verts2[8 + 1].z);
+	glVertex3f(model->verts2[8 + 2].x, model->verts2[8 + 2].y, model->verts2[8 + 2].z);
+	glVertex3f(model->verts2[8 + 3].x, model->verts2[8 + 3].y, model->verts2[8 + 3].z);
+	glEnd();
+
+	//top face back cube
+	glBegin(GL_LINE_LOOP);
+	glVertex3f(model->verts2[8 + 3].x, model->verts2[8 + 3].y, model->verts2[8 + 3].z);
+	glVertex3f(model->verts2[8 + 2].x, model->verts2[8 + 2].y, model->verts2[8 + 2].z);
+	glVertex3f(model->verts2[8 + 6].x, model->verts2[8 + 6].y, model->verts2[8 + 6].z);
+	glVertex3f(model->verts2[8 + 7].x, model->verts2[8 + 7].y, model->verts2[8 + 7].z);
+	glEnd();
+
+	//right face back cube
+	glBegin(GL_LINE_LOOP);
+	glVertex3f(model->verts2[8 + 1].x, model->verts2[8 + 1].y, model->verts2[8 + 1].z);
+	glVertex3f(model->verts2[8 + 5].x, model->verts2[8 + 5].y, model->verts2[8 + 5].z);
+	glVertex3f(model->verts2[8 + 6].x, model->verts2[8 + 6].y, model->verts2[8 + 6].z);
+	glVertex3f(model->verts2[8 + 2].x, model->verts2[8 + 2].y, model->verts2[8 + 2].z);
+	glEnd();
+
+	//left face back cube
+	glBegin(GL_LINE_LOOP);
+	glVertex3f(model->verts2[8 + 0].x, model->verts2[8 + 0].y, model->verts2[8 + 0].z);
+	glVertex3f(model->verts2[8 + 3].x, model->verts2[8 + 3].y, model->verts2[8 + 3].z);
+	glVertex3f(model->verts2[8 + 7].x, model->verts2[8 + 7].y, model->verts2[8 + 7].z);
+	glVertex3f(model->verts2[8 + 4].x, model->verts2[8 + 4].y, model->verts2[8 + 4].z);
+	glEnd();
+
+	//bottom face back cube
+	glBegin(GL_LINE_LOOP);
+	glVertex3f(model->verts2[8 + 0].x, model->verts2[8 + 0].y, model->verts2[8 + 0].z);
+	glVertex3f(model->verts2[8 + 4].x, model->verts2[8 + 4].y, model->verts2[8 + 4].z);
+	glVertex3f(model->verts2[8 + 5].x, model->verts2[8 + 5].y, model->verts2[8 + 5].z);
+	glVertex3f(model->verts2[8 + 1].x, model->verts2[8 + 1].y, model->verts2[8 + 1].z);
+	glEnd();
+
+	//back face back cube
+	glBegin(GL_LINE_LOOP);
+	glVertex3f(model->verts2[8 + 4].x, model->verts2[8 + 4].y, model->verts2[8 + 4].z);
+	glVertex3f(model->verts2[8 + 7].x, model->verts2[8 + 7].y, model->verts2[8 + 7].z);
+	glVertex3f(model->verts2[8 + 6].x, model->verts2[8 + 6].y, model->verts2[8 + 6].z);
+	glVertex3f(model->verts2[8 + 5].x, model->verts2[8 + 5].y, model->verts2[8 + 5].z);
+	glEnd();
+
+
+	glColor3f(0.0, 1.0, 0.0);
+	//connect the vertices
+	glBegin(GL_LINES);
+	glVertex3f(model->verts2[0].x, model->verts2[0].y, model->verts2[0].z);
+	glVertex3f(model->verts2[8 + 0].x, model->verts2[8 + 0].y, model->verts2[8 + 0].z);
+
+	glVertex3f(model->verts2[1].x, model->verts2[1].y, model->verts2[1].z);
+	glVertex3f(model->verts2[8 + 1].x, model->verts2[8 + 1].y, model->verts2[8 + 1].z);
+
+	glVertex3f(model->verts2[2].x, model->verts2[2].y, model->verts2[2].z);
+	glVertex3f(model->verts2[8 + 2].x, model->verts2[8 + 2].y, model->verts2[8 + 2].z);
+
+	glVertex3f(model->verts2[3].x, model->verts2[3].y, model->verts2[3].z);
+	glVertex3f(model->verts2[8 + 3].x, model->verts2[8 + 3].y, model->verts2[8 + 3].z);
+
+	glVertex3f(model->verts2[4].x, model->verts2[4].y, model->verts2[4].z);
+	glVertex3f(model->verts2[8 + 4].x, model->verts2[8 + 4].y, model->verts2[8 + 4].z);
+
+	glVertex3f(model->verts2[5].x, model->verts2[5].y, model->verts2[5].z);
+	glVertex3f(model->verts2[8 + 5].x, model->verts2[8 + 5].y, model->verts2[8 + 5].z);
+
+	glVertex3f(model->verts2[6].x, model->verts2[6].y, model->verts2[6].z);
+	glVertex3f(model->verts2[8 + 6].x, model->verts2[8 + 6].y, model->verts2[8 + 6].z);
+
+	glVertex3f(model->verts2[7].x, model->verts2[7].y, model->verts2[7].z);
+	glVertex3f(model->verts2[8 + 7].x, model->verts2[8 + 7].y, model->verts2[8 + 7].z);
+
+	glEnd();
 }

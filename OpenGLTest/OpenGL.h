@@ -34,6 +34,9 @@ public:
 	int Wc_loc;
 	int Wd_loc;
 
+	float w_pos = 4.0f;
+	float w_move = -.005f;
+
 	//Constructors
 	OpenGL();
 	~OpenGL();
@@ -47,7 +50,7 @@ public:
 	void update_swapchain();
 	void release(int value);
 
-	void update_resources(Model * model, Transform *transform, Camera *camera, glm::mat4 view, glm::mat4 proj);
+	void update_resources(Model * model, Transform *transform, Camera *camera, glm::mat4 view, glm::mat4 proj, glm::vec4 To);
 	void render_model(Model *model);
 
 	template <typename T>

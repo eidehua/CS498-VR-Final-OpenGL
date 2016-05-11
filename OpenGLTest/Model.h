@@ -8,12 +8,12 @@ class Model : GameComponent
 {
 public:
 	std::vector<VERTEX4D> verts4D;
-	//std::vector<VERTEX4D> verts2;
+	std::vector<VERTEX> verts2;
 	Buffer *vertexBuffer;
 
 	std::vector<GLushort> indices;
 	Buffer *indiciesBuffer;
-
+	bool autoRotate = false;
 	Buffer *modelBuffer;
 
 	Model();

@@ -103,7 +103,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>U:\CS498SL Virtual Reality\GitHubVisualStudio\CS498-VR-Final-OpenGL\LibOVR\Include;C:\Users\emsauer2\Desktop\CS498-VR-Final-OpenGL\LibOVR\Include;C:\Users\emsauer2\Desktop\CS498-VR-Final-OpenGL\LibOVRKernel\Src;$(OVRSDKROOT)LibOVRKernel/Src/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\exue2\Documents\GitHubVisualStudio\CS498-VR-Final-OpenGL\LibOVRKernel\Src;C:\Users\exue2\Documents\GitHubVisualStudio\CS498-VR-Final-OpenGL\LibOVR\Include;U:\CS498SL Virtual Reality\GitHubVisualStudio\CS498-VR-Final-OpenGL\LibOVR\Include;C:\Users\emsauer2\Desktop\CS498-VR-Final-OpenGL\LibOVR\Include;C:\Users\emsauer2\Desktop\CS498-VR-Final-OpenGL\LibOVRKernel\Src;$(OVRSDKROOT)LibOVRKernel/Src/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>

@@ -82,14 +82,30 @@ static bool MainLoop(bool retryCreate)
 	debug.init(debug.VERBOSE);
 	opengl.init(1600, 700);
 
-	GameObject *box = new GameObject(vec3(0, 0, 0), vec3(0, 0, 0), vec3(1, 1, 1));
+	GameObject *box = new GameObject(vec3(0, 2, 0), vec3(0, 0, 0), vec3(1, 1, 1));
 	Model *box_model = new Model();
-	box_model->init_from_obj_file(L"box_red_4d.obj");
+	box_model->autoRotate = true;
+	//box_model->init_from_obj_file(L"box_red_4d.obj");
+	box_model->init_from_obj_file(L"hypercube.obj");
 	box->add_game_component((GameComponent *)box_model);
-	opengl.init_buffer(box_model->vertexBuffer, box_model->verts4D, GL_ARRAY_BUFFER, GL_STATIC_DRAW);
+	opengl.init_buffer(box_model->vertexBuffer, box_model->verts4D, GL_ARRAY_BUFFER, GL_DYNAMIC_DRAW);
 	opengl.init_buffer(box_model->indiciesBuffer, box_model->indices, GL_ELEMENT_ARRAY_BUFFER, GL_STATIC_DRAW);
 	opengl.bind_vertex_indices(box_model);
 	scene.add_game_object(box);
+
+
+	GameObject *box1 = new GameObject(vec3(5, 5, 0), vec3(0, 0, 0), vec3(1, 1, 1));
+	Model *box_model1 = new Model();
+	box_model1->autoRotate = false;
+	box_model1->init_from_obj_file(L"hypercube.obj");
+	//box_model->init_from_obj_file(L"hypercube.obj");
+	box1->add_game_component((GameComponent *)box_model1);
+	opengl.init_buffer(box_model1->vertexBuffer, box_model1->verts4D, GL_ARRAY_BUFFER, GL_DYNAMIC_DRAW);
+	opengl.init_buffer(box_model1->indiciesBuffer, box_model1->indices, GL_ELEMENT_ARRAY_BUFFER, GL_STATIC_DRAW);
+	opengl.bind_vertex_indices(box_model1);
+	scene.add_game_object(box1);
+	
+
 
     // Make eye render buffers
     for (int eye = 0; eye < 2; ++eye)
@@ -138,7 +154,7 @@ static bool MainLoop(bool retryCreate)
         if (Platform.Key[VK_RIGHT]) Yaw -= 0.02f;
 
         // Keyboard inputs to adjust player position
-        static Vector3f Pos2(0.0f,0.0f,-10.0f);
+        static Vector3f Pos2(4.0f,0.0f,-10.0f);
         if (Platform.Key['W']||Platform.Key[VK_UP])     Pos2+=Matrix4f::RotationY(Yaw).Transform(Vector3f(0,0,-0.05f));
         if (Platform.Key['S']||Platform.Key[VK_DOWN])   Pos2+=Matrix4f::RotationY(Yaw).Transform(Vector3f(0,0,+0.05f));
         if (Platform.Key['D'])                          Pos2+=Matrix4f::RotationY(Yaw).Transform(Vector3f(+0.05f,0,0));

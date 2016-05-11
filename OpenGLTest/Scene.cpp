@@ -48,12 +48,15 @@ void Scene::render_scene(OpenGL *opengl, glm::mat4 view, glm::mat4 proj)
 {
 	opengl->set_background(this->bgcolor);
 	opengl->clear_bits();
-
+	glm::vec4 To(0.0f, 0.0f, 0.0f, 0.0f);
 	for (std::vector<GameObject *>::iterator it = this->game_objects.begin(); it != this->game_objects.end(); ++it)
 	{
 		Model *game_model = (Model *) (*it)->get_game_component(GameComponent::MODEL);
 		if ((*it)->get_game_component(GameComponent::MODEL) != NULL){
-			opengl->update_resources(game_model, (Transform *) (*it)->get_game_component(GameComponent::TRANSFORM), &this->camera, view, proj);
+			opengl->update_resources(game_model, (Transform *) (*it)->get_game_component(GameComponent::TRANSFORM), &this->camera, view, proj, To);
+			//To[0] -= 10.0f;
+			//To[2] += 3.0f;
+			//move our next object away
 			opengl->render_model(game_model);
 		}
 	}

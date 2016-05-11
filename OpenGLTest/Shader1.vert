@@ -1,7 +1,7 @@
 //[VERTEX SHADER]
 #version 330
 
-in vec4 InVertex;
+in vec3 InVertex;
 in vec4 InColor;
 
 smooth out vec4 Color;
@@ -16,16 +16,8 @@ uniform vec4 Wd;
 
 void main()
 {
-	float S, T;
-	vec4 V, newV;
+	
 
-	T = 1 / tan(45.0 / 2.0);
-
-	V = InVertex - From;
-	S = T /  dot(V, Wd);
-
-	newV = vec4(S * dot(V, Wa), S * dot(V, Wb), S * dot(V, Wc), 1.0);
-
-	gl_Position = ProjectionModelviewMatrix * newV;
+	gl_Position = ProjectionModelviewMatrix * vec4(InVertex,1.0);
 	Color = InColor;
 }

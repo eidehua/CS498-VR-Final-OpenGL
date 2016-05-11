@@ -377,8 +377,8 @@ struct OGL
         glGenFramebuffers(1, &fboId);
 
         glEnable(GL_DEPTH_TEST);
-        glFrontFace(GL_CW);
-        glEnable(GL_CULL_FACE);
+        //glFrontFace(GL_CW);
+        //glEnable(GL_CULL_FACE);
 
         if (UseDebugContext && GLE_ARB_debug_output)
         {

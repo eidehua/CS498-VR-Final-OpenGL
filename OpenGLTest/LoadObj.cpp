@@ -38,6 +38,7 @@ bool init_model_from_obj(const wchar_t *filename, Model *model){
 		if (line[0] == 'v' && line[1] == ' '){
 			sscanf_s(&line[0], "v %f %f %f %f", &x, &y, &z, &w);
 			model->verts4D.push_back({ x, y, z, w, color});
+			model->verts2.push_back({ x,y,z,color });
 		}
 		// Found new texture mapping coord
 		/*else if (line[0] == 'v' && line[1] == 't'){
