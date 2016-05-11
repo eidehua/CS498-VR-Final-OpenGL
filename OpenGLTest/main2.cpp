@@ -84,10 +84,10 @@ static bool MainLoop(bool retryCreate)
 
 	GameObject *box = new GameObject(vec3(0, 0, 0), vec3(0, 0, 0), vec3(1, 1, 1));
 	Model *box_model = new Model();
-	box_model->init_from_obj_file(L"box_red.obj");
+	box_model->init_from_obj_file(L"box_red_4d.obj");
 	box->add_game_component((GameComponent *)box_model);
-	opengl.init_buffer(box_model->vertexBuffer, box_model->verts, GL_ARRAY_BUFFER);
-	opengl.init_buffer(box_model->indiciesBuffer, box_model->indices, GL_ELEMENT_ARRAY_BUFFER);
+	opengl.init_buffer(box_model->vertexBuffer, box_model->verts4D, GL_ARRAY_BUFFER, GL_STATIC_DRAW);
+	opengl.init_buffer(box_model->indiciesBuffer, box_model->indices, GL_ELEMENT_ARRAY_BUFFER, GL_STATIC_DRAW);
 	opengl.bind_vertex_indices(box_model);
 	scene.add_game_object(box);
 

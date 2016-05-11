@@ -28,6 +28,11 @@ public:
 	GLuint VertexShader;
 	GLuint FragmentShader;
 	int ProjectionModelviewMatrix_Loc;
+	int From_loc;
+	int Wa_loc;
+	int Wb_loc;
+	int Wc_loc;
+	int Wd_loc;
 
 	//Constructors
 	OpenGL();
@@ -42,17 +47,17 @@ public:
 	void update_swapchain();
 	void release(int value);
 
-	void update_resources(Transform *transform, Camera *camera, glm::mat4 view, glm::mat4 proj);
+	void update_resources(Model * model, Transform *transform, Camera *camera, glm::mat4 view, glm::mat4 proj);
 	void render_model(Model *model);
 
 	template <typename T>
-	bool init_buffer(Buffer *buffer, vector<T> &data, unsigned int type)
+	bool init_buffer(Buffer *buffer, vector<T> &data, unsigned int type, unsigned int buffer_type)
 	{
 		GLenum error = glGetError();
 
 		glGenBuffers(1, &buffer->buffer);
 		glBindBuffer(type, buffer->buffer);
-		glBufferData(type, data.size() * sizeof(T), &data[0], GL_STATIC_DRAW);
+		glBufferData(type, data.size() * sizeof(T), &data[0], buffer_type);
 
 		error = glGetError();
 		if (error != 0) {
@@ -78,8 +83,8 @@ public:
 		glBindVertexArray(model->modelBuffer->buffer);
 
 		glBindBuffer(GL_ARRAY_BUFFER, model->vertexBuffer->buffer);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VERTEX), BUFFER_OFFSET(0));
-		glVertexAttribPointer(3, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(VERTEX), BUFFER_OFFSET(sizeof(float) * 3));
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VERTEX4D), BUFFER_OFFSET(0));
+		glVertexAttribPointer(3, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(VERTEX4D), BUFFER_OFFSET(sizeof(float) * 4));
 		glEnableVertexAttribArray(0);
 		glDisableVertexAttribArray(1);
 		glDisableVertexAttribArray(2);

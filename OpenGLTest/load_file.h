@@ -7,9 +7,11 @@
 #include <string>
 #include <sstream>
 
+#include "Debug.h"
+
 using namespace std;
 
-extern
+extern Debug debug;
 
 std::string loadFile(const char *fname);
 

@@ -7,7 +7,8 @@
 class Model : GameComponent
 {
 public:
-	std::vector<VERTEX> verts;
+	std::vector<VERTEX4D> verts4D;
+	//std::vector<VERTEX4D> verts2;
 	Buffer *vertexBuffer;
 
 	std::vector<GLushort> indices;

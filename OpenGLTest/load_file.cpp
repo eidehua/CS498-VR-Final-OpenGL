@@ -34,7 +34,7 @@ void printShaderInfoLog(GLint shader)
 		infoLog = new GLchar[infoLogLen];
 		// error check for fail to allocate memory omitted
 		glGetShaderInfoLog(shader, infoLogLen, &charsWritten, infoLog);
-		cout << "InfoLog : " << endl << infoLog << endl;
+		debug.write(infoLog);
 		delete[] infoLog;
 	}
 }
@@ -77,7 +77,7 @@ int LoadShader(const char *pfilePath_vs, const char *pfilePath_fs, bool bindTexC
 	glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &compiled);
 	if (compiled == FALSE)
 	{
-		cout << "Vertex shader not compiled." << endl;
+		debug.write("Vertex shader not compiled.");
 		printShaderInfoLog(vertexShader);
 
 		glDeleteShader(vertexShader);

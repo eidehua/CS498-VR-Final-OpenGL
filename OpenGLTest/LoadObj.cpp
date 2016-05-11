@@ -25,7 +25,7 @@ bool init_model_from_obj(const wchar_t *filename, Model *model){
 	//std::vector<vec2> vertex_texture;
 	//std::vector<vec4> vertex_normal;
 
-	float x, y, z;
+	float x, y, z, w;
 	int a, b, c, d, e, f, g, h, i;
 	std::string line;
 	unsigned int color = 0xffff00;
@@ -36,8 +36,8 @@ bool init_model_from_obj(const wchar_t *filename, Model *model){
 			sscanf_s(&line[0], "c 0x%x", &color);
 		}
 		if (line[0] == 'v' && line[1] == ' '){
-			sscanf_s(&line[0], "v %f %f %f", &x, &y, &z);
-			model->verts.push_back({ x, y, z, color});
+			sscanf_s(&line[0], "v %f %f %f %f", &x, &y, &z, &w);
+			model->verts4D.push_back({ x, y, z, w, color});
 		}
 		// Found new texture mapping coord
 		/*else if (line[0] == 'v' && line[1] == 't'){

@@ -53,7 +53,7 @@ void Scene::render_scene(OpenGL *opengl, glm::mat4 view, glm::mat4 proj)
 	{
 		Model *game_model = (Model *) (*it)->get_game_component(GameComponent::MODEL);
 		if ((*it)->get_game_component(GameComponent::MODEL) != NULL){
-			opengl->update_resources((Transform *) (*it)->get_game_component(GameComponent::TRANSFORM), &this->camera, view, proj);
+			opengl->update_resources(game_model, (Transform *) (*it)->get_game_component(GameComponent::TRANSFORM), &this->camera, view, proj);
 			opengl->render_model(game_model);
 		}
 	}
